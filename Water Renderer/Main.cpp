@@ -1,9 +1,12 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <math.h>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <vector>
 
 #include <iostream>
+#include <string>
+#include <fstream>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
@@ -86,18 +89,15 @@ int main()
 
 	// Vertex shader creation.
 	GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-	//std::string vertex_shader_string;
+
+	std::ifstream test;
+	std::string vertex_shader_string;
+	test.open("resource://water_vs.glsl", std::ifstream::in);
+	std::getline(test, vertex_shader_string);
 	
 	//TODO: Need changing potentially with ifstream to load in the appropriate shaders.
 
-	//const char * vertex_shader_code = vertex_shader_string.c_str();
-	const char * vertex_shader_code =
-		"#version 420 core\n"
-		"layout (location = 0) in vec3 vertex_position\n"
-		"void main()\n"
-		"{\n"
-		"    gl_Position = vec4(vertex_position.x, vertex_position.y, vertex_position.z, 1.0)\n"
-		"}\0";
+	const char * vertex_shader_code = vertex_shader_string.c_str();
 
 	glShaderSource(vertex_shader, 1, (const GLchar **)&vertex_shader_code,
 		NULL);
@@ -114,16 +114,9 @@ int main()
 
 	// Fragment shader creation.
 	GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-	//std::string fragment_shader_string;
+	std::string fragment_shader_string;
 
-	//const char * fragment_shader_code = fragment_shader_string.c_str();
-	const char * fragment_shader_code =
-		"#version 420 core\n"
-		"out vec4 fragment_colour\n"
-		"void main()\n"
-		"{\n"
-		"    fragment_colour = vec4(0.5, 0.5, 0.25, 1.0)\n"
-		"}\0";
+	const char * fragment_shader_code = fragment_shader_string.c_str();
 
 	glShaderSource(fragment_shader, 1, (const GLchar **)&fragment_shader_code,
 		NULL);
@@ -185,9 +178,3 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
 }
-
-//std::string CreateStringFromFile(const std::string & uri)
-//{
-//	
-//}
-
