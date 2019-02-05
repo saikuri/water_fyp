@@ -2,7 +2,7 @@
 
 out vec4 fragment_colour;
 
-void main(void)
+void main()
 {
 	fragment_colour = vec4(0.5, 0.5, 0.25, 1.0);
 }

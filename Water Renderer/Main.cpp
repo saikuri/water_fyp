@@ -1,5 +1,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <math.h>
+#include <vector>
 
 #include <iostream>
 
@@ -35,23 +37,68 @@ int main()
 		return -1;
 	}
 
+	// I feel like these could be changed significantly by adding in GLM library.
+	float vertices[] = {
+		0.5f, 0.5f, 0.0f,
+		0.5f, -0.5f, 0.0f,
+		-0.5f, -0.5f, 0.0f,
+		-0.5f, 0.5f, 0.0f
+	};
+
+	// I feel like these could be changed significantly by adding in GLM library.
+	GLint indices[] = {
+		0, 1, 3,
+		1, 2, 3
+	};
+
 	// Generating vertex buffer object for position.
 	GLuint vertex_vbo{ 0 };
 	glGenBuffers(1, &vertex_vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
 	glBufferData(GL_ARRAY_BUFFER,
-		2, NULL, 
+		sizeof(vertices), vertices, 
 		GL_STATIC_DRAW); //TODO: needs sorting out when i've had food.
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	GLuint element_vbo{ 0 };
+	glGenBuffers(1, &element_vbo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_vbo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+		sizeof(indices), indices,
+		GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	GLuint vao{ 0 };
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_vbo);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
+		sizeof(float), (void*)0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 
 	// Shader compile status.
 	GLint compile_status = GL_FALSE;
 
 	// Vertex shader creation.
 	GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-	std::string vertex_shader_string;
+	//std::string vertex_shader_string;
+	
+	//TODO: Need changing potentially with ifstream to load in the appropriate shaders.
 
-	const char * vertex_shader_code = vertex_shader_string.c_str();
+	//const char * vertex_shader_code = vertex_shader_string.c_str();
+	const char * vertex_shader_code =
+		"#version 420 core\n"
+		"layout (location = 0) in vec3 vertex_position\n"
+		"void main()\n"
+		"{\n"
+		"    gl_Position = vec4(vertex_position.x, vertex_position.y, vertex_position.z, 1.0)\n"
+		"}\0";
+
 	glShaderSource(vertex_shader, 1, (const GLchar **)&vertex_shader_code,
 		NULL);
 	glCompileShader(vertex_shader);
@@ -67,9 +114,17 @@ int main()
 
 	// Fragment shader creation.
 	GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-	std::string fragment_shader_string;
+	//std::string fragment_shader_string;
 
-	const char * fragment_shader_code = fragment_shader_string.c_str();
+	//const char * fragment_shader_code = fragment_shader_string.c_str();
+	const char * fragment_shader_code =
+		"#version 420 core\n"
+		"out vec4 fragment_colour\n"
+		"void main()\n"
+		"{\n"
+		"    fragment_colour = vec4(0.5, 0.5, 0.25, 1.0)\n"
+		"}\0";
+
 	glShaderSource(fragment_shader, 1, (const GLchar **)&fragment_shader_code,
 		NULL);
 	glCompileShader(fragment_shader);
@@ -111,10 +166,16 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glUseProgram(water_shader_prog);
+		glBindVertexArray(vao);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+
+	glDeleteBuffers(1, &vertex_vbo);
+	glDeleteBuffers(1, &element_vbo);
+	glDeleteVertexArrays(1, &vao);
 
 	glfwTerminate();
 	return 0;
