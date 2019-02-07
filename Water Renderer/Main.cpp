@@ -14,6 +14,13 @@ std::string StringFromFile(const std::string &filename);
 const unsigned int screen_width = 1280;
 const unsigned int screen_height = 720;
 
+struct Vertex
+{
+	glm::vec3 position;
+	glm::vec3 normal;
+	glm::vec2 texCoord;
+};
+
 int main()
 	{
 	// Initialise and configure GLFW.
@@ -23,7 +30,7 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// GLFW window creation.
-	GLFWwindow* window = glfwCreateWindow(screen_width, screen_height, "Test Water Render Window", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(screen_width, screen_height, "P4112379 James Metcalfe Computing Project", NULL, NULL);
 	if (window == NULL)
 		{
 		std::cout << "Failed to create a GLFW window" << std::endl;
@@ -41,8 +48,11 @@ int main()
 		return -1;
 		}
 
+	std::vector<Vertex> vertices;
+	std::vector<unsigned int> elements;
+
 	// I feel like these could be changed significantly by adding in GLM library.
-	float vertices[] = {
+	float verts[] = {
 		-0.5f, -0.5f, 0.0f,
 		 0.5f, -0.5f, 0.0f,
 		 0.0f,  0.5f, 0.0f
@@ -54,12 +64,32 @@ int main()
 		1, 2, 3
 		};
 
+	verts[0] = vertices.size();
+	indices[0] = elements.size();
+	
 	// Generating vertex buffer object for position.
+	//GLuint vertex_vbo{ 0 };
+	//glGenBuffers(1, &vertex_vbo);
+	//glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
+	//glBufferData(GL_ARRAY_BUFFER,
+	//	sizeof(vertices), vertices,
+	//	GL_STATIC_DRAW); //TODO: needs sorting out when i've had food.
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	//GLuint element_vbo{ 0 };
+	//glGenBuffers(1, &element_vbo);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_vbo);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+	//	sizeof(indices), indices,
+	//	GL_STATIC_DRAW);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
 	GLuint vertex_vbo{ 0 };
 	glGenBuffers(1, &vertex_vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
 	glBufferData(GL_ARRAY_BUFFER,
-		sizeof(vertices), vertices,
+		vertices.size() * sizeof(Vertex),
+		vertices.data(),
 		GL_STATIC_DRAW); //TODO: needs sorting out when i've had food.
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -67,7 +97,8 @@ int main()
 	glGenBuffers(1, &element_vbo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_vbo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-		sizeof(indices), indices,
+		elements.size() * sizeof(unsigned int),
+		elements.data(),
 		GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
@@ -79,7 +110,7 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
-		3 * sizeof(float), (void*)0);
+		sizeof(Vertex), (void*)offsetof(Vertex, position));
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
