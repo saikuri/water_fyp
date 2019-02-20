@@ -1,16 +1,14 @@
 #include "pch.h"
 #include "Geometry.hpp"
 
-namespace pwgl {
-	inline namespace pwgl_2 {
-		Geometry::Geometry()
-		{
-		}
+using namespace pwgl;
+
+Geometry::Geometry()
+{
+}
 
 
-		Geometry::~Geometry()
-		{
-		}
-	}
+Geometry::~Geometry()
+{
 }
 

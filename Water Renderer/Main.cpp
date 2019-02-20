@@ -23,6 +23,7 @@ struct Vertex
 
 int main()
 	{
+	
 	// Initialise and configure GLFW.
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
