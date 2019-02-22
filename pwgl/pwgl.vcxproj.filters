@@ -13,35 +13,41 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\pwgl">
+      <UniqueIdentifier>{9a05f13a-1ded-4eda-89ce-fa46aea7a499}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Mesh.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Include\pwgl\Config.hpp">
+      <Filter>Header Files\pwgl</Filter>
     </ClInclude>
-    <ClInclude Include="Geometry.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Include\pwgl\Geometry.hpp">
+      <Filter>Header Files\pwgl</Filter>
     </ClInclude>
-    <ClInclude Include="Config.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Include\pwgl\Mesh.hpp">
+      <Filter>Header Files\pwgl</Filter>
     </ClInclude>
-    <ClInclude Include="Types.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Include\pwgl\pch.h">
+      <Filter>Header Files\pwgl</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\pwgl\Types.hpp">
+      <Filter>Header Files\pwgl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
+    <ClCompile Include="Source\Geometry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="pwgl.cpp">
+    <ClCompile Include="Source\Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Mesh.cpp">
+    <ClCompile Include="Source\pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Geometry.cpp">
+    <ClCompile Include="Source\pwgl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Types.cpp">
+    <ClCompile Include="Source\Types.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

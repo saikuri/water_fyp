@@ -72,7 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)External\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)pwsl\Include;$(SolutionDir)pwgl\Include;$(SolutionDir)External\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)External\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

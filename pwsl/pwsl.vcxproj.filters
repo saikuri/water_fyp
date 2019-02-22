@@ -13,24 +13,33 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\pwsl">
+      <UniqueIdentifier>{894fdc11-10fc-40e5-afc3-6a5b627e3cfd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClCompile Include="Source\pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\pwsl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="pwsl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClInclude Include="Include\pwsl\pch.h">
+      <Filter>Header Files\pwsl</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\pwsl\pwsl.hpp">
+      <Filter>Header Files\pwsl</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\pwsl\pwsl_fwd.hpp">
+      <Filter>Header Files\pwsl</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\pwsl\Shader.hpp">
+      <Filter>Header Files\pwsl</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

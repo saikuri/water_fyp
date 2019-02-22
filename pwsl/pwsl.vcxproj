@@ -18,6 +18,17 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\pch.cpp" />
+    <ClCompile Include="Source\pwsl.cpp" />
+    <ClCompile Include="Source\Shader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Include\pwsl\pch.h" />
+    <ClInclude Include="Include\pwsl\pwsl.hpp" />
+    <ClInclude Include="Include\pwsl\pwsl_fwd.hpp" />
+    <ClInclude Include="Include\pwsl\Shader.hpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{A07AC7C0-3AE9-4D5E-A15E-704669A1E204}</ProjectGuid>
@@ -72,7 +83,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)External\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)pwsl\Include;$(SolutionDir)External\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)External\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -152,20 +163,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="pch.h" />
-    <ClInclude Include="Shader.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="pwsl.cpp" />
-    <ClCompile Include="Shader.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

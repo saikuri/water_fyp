@@ -18,6 +18,20 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Include\pwgl\Config.hpp" />
+    <ClInclude Include="Include\pwgl\Geometry.hpp" />
+    <ClInclude Include="Include\pwgl\Mesh.hpp" />
+    <ClInclude Include="Include\pwgl\pch.h" />
+    <ClInclude Include="Include\pwgl\Types.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Geometry.cpp" />
+    <ClCompile Include="Source\Mesh.cpp" />
+    <ClCompile Include="Source\pch.cpp" />
+    <ClCompile Include="Source\pwgl.cpp" />
+    <ClCompile Include="Source\Types.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{1EE3B4C4-73EA-430C-ACA8-CC0BBA8B3F3D}</ProjectGuid>
@@ -72,7 +86,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)External\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)pwgl\Include;$(SolutionDir)External\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)External\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -152,24 +166,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="Config.hpp" />
-    <ClInclude Include="Geometry.hpp" />
-    <ClInclude Include="Mesh.hpp" />
-    <ClInclude Include="Types.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Geometry.cpp" />
-    <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="pwgl.cpp" />
-    <ClCompile Include="Types.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
