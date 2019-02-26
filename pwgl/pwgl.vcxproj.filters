@@ -33,6 +33,12 @@
     <ClInclude Include="Include\pwgl\Types.hpp">
       <Filter>Header Files\pwgl</Filter>
     </ClInclude>
+    <ClInclude Include="Include\pwgl\pwgl.hpp">
+      <Filter>Header Files\pwgl</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\pwgl\pwgl_fwd.hpp">
+      <Filter>Header Files\pwgl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Geometry.cpp">

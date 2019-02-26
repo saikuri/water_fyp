@@ -23,6 +23,8 @@
     <ClInclude Include="Include\pwgl\Geometry.hpp" />
     <ClInclude Include="Include\pwgl\Mesh.hpp" />
     <ClInclude Include="Include\pwgl\pch.h" />
+    <ClInclude Include="Include\pwgl\pwgl.hpp" />
+    <ClInclude Include="Include\pwgl\pwgl_fwd.hpp" />
     <ClInclude Include="Include\pwgl\Types.hpp" />
   </ItemGroup>
   <ItemGroup>
