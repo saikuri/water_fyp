@@ -1,5 +1,5 @@
-#include "pch.h"
-#include "Geometry.hpp"
+#include "pwgl/pch.h"
+#include "pwgl/Geometry.hpp"
 
 using namespace pwgl;
 

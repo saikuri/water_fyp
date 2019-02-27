@@ -157,10 +157,14 @@
   <ItemGroup>
     <ClCompile Include="glad.c" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Source\Camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="water_fs.glsl" />
     <None Include="water_vs.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Camera.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

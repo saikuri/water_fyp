@@ -9,17 +9,31 @@
 #include <fstream>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void processInput(GLFWwindow *window);
 std::string StringFromFile(const std::string &filename);
 
 const unsigned int screen_width = 1280;
 const unsigned int screen_height = 720;
 
-struct Vertex
-{
-	glm::vec3 position;
-	glm::vec3 normal;
-	glm::vec2 texCoord;
-};
+glm::vec3 camera_pos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 camera_front = glm::vec3(0.0f, 0.0f, -1.0f);
+
+glm::vec3 camera_target = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 camera_direction = glm::normalize(camera_pos - camera_target);
+
+glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+glm::vec3 camera_right = glm::normalize(glm::cross(up, camera_direction));
+glm::vec3 camera_up = glm::cross(camera_direction, camera_right);
+
+float delta_time = 0.0f;
+float last_frame = 0.0f;
+
+//struct Vertex
+//{
+//	glm::vec3 position;
+//	glm::vec3 normal;
+//	glm::vec2 texCoord;
+//};
 
 int main()
 	{
@@ -180,6 +194,9 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glUseProgram(water_shader_prog);
+
+		glm::mat4 view = glm::lookAt(camera_pos, camera_pos + camera_front, up);
+
 		glBindVertexArray(vao);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -200,6 +217,32 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	{
 	glViewport(0, 0, width, height);
 	}
+
+void processInput(GLFWwindow *window)
+{
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	{
+		glfwSetWindowShouldClose(window, true);
+	}
+
+	float camera_speed = 2.5 * delta_time;
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	{
+		camera_pos += camera_speed * camera_front;
+	}
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	{
+		camera_pos -= camera_speed * camera_front;
+	}
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	{
+		camera_pos -= glm::normalize(glm::cross(camera_front, up)) * camera_speed;
+	}
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	{
+		camera_pos += glm::normalize(glm::cross(camera_front, up)) * camera_speed;
+	}
+}
 
 std::string StringFromFile(const std::string &filename)
 	{

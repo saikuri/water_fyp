@@ -1,5 +1,5 @@
-#include "pch.h"
-#include "Types.hpp"
+#include "pwgl/pch.h"
+#include "pwgl/Types.hpp"
 
 using namespace pwgl;
 
