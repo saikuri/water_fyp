@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "Source/Camera.hpp"
 #include <vector>
 
 #include <iostream>
@@ -25,8 +26,11 @@ glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 glm::vec3 camera_right = glm::normalize(glm::cross(up, camera_direction));
 glm::vec3 camera_up = glm::cross(camera_direction, camera_right);
 
+Camera camera_;
+
 float delta_time = 0.0f;
 float last_frame = 0.0f;
+
 
 //struct Vertex
 //{
@@ -187,11 +191,19 @@ int main()
 		std::cerr << link_log << std::endl;
 		}
 
+	glm::vec3 camera_position = camera_.GetPosition();
+	glm::mat4 projection = glm::perspective(glm::radians(camera_.GetVerticalFOV()), (float)screen_width / (float)screen_height, camera_.GetNearPlane(), camera_.GetFarPlane());
+
+	glm::mat4 view = glm::lookAt(camera_position, camera_position + camera_.GetDirection(),
+		up);
+
 	// Render loop.
 	while (!glfwWindowShouldClose(window))
 		{
 		glClearColor(0.f, 0.f, 0.25f, 0.f);
 		glClear(GL_COLOR_BUFFER_BIT);
+
+		processInput(window);
 
 		glUseProgram(water_shader_prog);
 

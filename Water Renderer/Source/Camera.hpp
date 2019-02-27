@@ -6,6 +6,8 @@ class Camera
 public:
 	Camera();
 
+	bool IsStatic() const { return false; }
+
 	glm::vec3 GetPosition() const;
 	glm::vec3 GetDirection() const;
 
@@ -13,12 +15,18 @@ public:
 	float GetNearPlane() const;
 	float GetFarPlane() const;
 
-	void SetPosition();
-	void GetPosition();
+	glm::vec3 GetLinearVelocity() const;
+	glm::vec2 GetRotationalVelocity() const;
 
-	void SetVerticalFOV();
-	void SetNearPlane();
-	void SetFarPlane();
+	void SetPosition(glm::vec3 p);
+	void SetDirection(glm::vec3 d);
+
+	void SetVerticalFOV(float d);
+	void SetNearPlane(float n);
+	void SetFarPlane(float f);
+
+	void SetLinearVelocity(glm::vec3 v);
+	void SetRotationalVelocity(glm::vec2 v);
 
 private:
 	glm::vec3 position;
@@ -26,5 +34,7 @@ private:
 	float vertical_field_of_view;
 	float near_plane_distance;
 	float far_plane_distance;
+	glm::vec3 translation_speed;
+	glm::vec2 rotation_speed;
 
 };
