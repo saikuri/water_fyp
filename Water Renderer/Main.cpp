@@ -192,10 +192,7 @@ int main()
 		}
 
 	glm::vec3 camera_position = camera_.GetPosition();
-	glm::mat4 projection = glm::perspective(glm::radians(camera_.GetVerticalFOV()), (float)screen_width / (float)screen_height, camera_.GetNearPlane(), camera_.GetFarPlane());
 
-	glm::mat4 view = glm::lookAt(camera_position, camera_position + camera_.GetDirection(),
-		up);
 
 	// Render loop.
 	while (!glfwWindowShouldClose(window))
@@ -207,7 +204,12 @@ int main()
 
 		glUseProgram(water_shader_prog);
 
-		glm::mat4 view = glm::lookAt(camera_pos, camera_pos + camera_front, up);
+		glm::mat4 projection = glm::perspective(glm::radians(camera_.GetVerticalFOV()), (float)screen_width / (float)screen_height, camera_.GetNearPlane(), camera_.GetFarPlane());
+		glUniformMatrix4fv(glGetUniformLocation(water_shader_prog, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+		glm::mat4 view = glm::lookAt(camera_position, camera_position + camera_.GetDirection(), up);
+		glUniformMatrix4fv(glGetUniformLocation(water_shader_prog, "view"), 1, GL_FALSE, glm::value_ptr(view));
+
+		//glm::mat4 view = glm::lookAt(camera_pos, camera_pos + camera_front, up);
 
 		glBindVertexArray(vao);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
