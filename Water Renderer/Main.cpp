@@ -11,26 +11,20 @@
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
+void mouse_callBack(GLFWwindow* window, double xPos, double yPos);
+void scroll_callBack(GLFWwindow* window, double xOffset, double yOffset);
 std::string StringFromFile(const std::string &filename);
 
 const unsigned int screen_width = 1280;
 const unsigned int screen_height = 720;
 
-glm::vec3 camera_pos = glm::vec3(0.0f, 0.0f, 3.0f);
-glm::vec3 camera_front = glm::vec3(0.0f, 0.0f, -1.0f);
-
-glm::vec3 camera_target = glm::vec3(0.0f, 0.0f, 0.0f);
-glm::vec3 camera_direction = glm::normalize(camera_pos - camera_target);
-
-glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-glm::vec3 camera_right = glm::normalize(glm::cross(up, camera_direction));
-glm::vec3 camera_up = glm::cross(camera_direction, camera_right);
-
-Camera camera_;
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+float lastX = screen_width / 2.0f;
+float lastY = screen_height / 2.0f;
+bool mouseEnable = true;
 
 float delta_time = 0.0f;
 float last_frame = 0.0f;
-
 
 //struct Vertex
 //{
@@ -40,8 +34,7 @@ float last_frame = 0.0f;
 //};
 
 int main()
-	{
-	
+{
 	// Initialise and configure GLFW.
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -51,22 +44,27 @@ int main()
 	// GLFW window creation.
 	GLFWwindow* window = glfwCreateWindow(screen_width, screen_height, "P4112379 James Metcalfe Computing Project", NULL, NULL);
 	if (window == NULL)
-		{
+	{
 		std::cout << "Failed to create a GLFW window" << std::endl;
 		glfwTerminate();
 		return -1;
-		}
+	}
 
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	glfwSetCursorPosCallback(window, mouse_callBack);
+	glfwSetScrollCallback(window, scroll_callBack);
+
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// GLAD: Load all OpenGL function pointers.
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-		{
+	{
 		std::cout << "Failed to initialise GLAD" << std::endl;
 		return -1;
-		}
+	}
 
+	glEnable(GL_DEPTH_TEST);
 	//std::vector<Vertex> vertices;
 	//std::vector<unsigned int> elements;
 
@@ -75,14 +73,14 @@ int main()
 		-0.5f, -0.5f, 0.0f,
 		 0.5f, -0.5f, 0.0f,
 		 0.0f,  0.5f, 0.0f
-		};
+	};
 
 	// I feel like these could be changed significantly by adding in GLM library.
 	GLint indices[] = {
 		0, 1, 3,
 		1, 2, 3
-		};
-	
+	};
+
 	// Generating vertex buffer object for position.
 	GLuint vertex_vbo{ 0 };
 	glGenBuffers(1, &vertex_vbo);
@@ -145,12 +143,12 @@ int main()
 	glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &compile_status);
 
 	if (compile_status != GL_TRUE)
-		{
+	{
 		const int string_length = 1024;
 		GLchar compile_log[string_length] = "";
 		glGetShaderInfoLog(vertex_shader, string_length, NULL, compile_log);
 		std::cerr << compile_log << std::endl;
-		}
+	}
 
 	// Fragment shader creation.
 	GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -163,12 +161,12 @@ int main()
 	glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &compile_status);
 
 	if (compile_status != GL_TRUE)
-		{
+	{
 		const int string_length = 1024;
 		GLchar compile_log[string_length] = "";
 		glGetShaderInfoLog(fragment_shader, string_length, NULL, compile_log);
 		std::cerr << compile_log << std::endl;
-		}
+	}
 
 	// Shader program generation.
 	GLuint water_shader_prog{ 0 };
@@ -184,32 +182,36 @@ int main()
 	GLint link_status = 0;
 	glGetProgramiv(water_shader_prog, GL_LINK_STATUS, &link_status);
 	if (link_status != GL_TRUE)
-		{
+	{
 		const int string_length = 1024;
 		GLchar link_log[string_length] = "";
 		glGetProgramInfoLog(water_shader_prog, string_length, NULL, link_log);
 		std::cerr << link_log << std::endl;
-		}
-
-	glm::vec3 camera_position = camera_.GetPosition();
-
+	}
 
 	// Render loop.
 	while (!glfwWindowShouldClose(window))
-		{
-		glClearColor(0.f, 0.f, 0.25f, 0.f);
-		glClear(GL_COLOR_BUFFER_BIT);
+	{
+
+		float currentFrame = glfwGetTime();
+		delta_time = currentFrame - last_frame;
+		last_frame = currentFrame;
 
 		processInput(window);
 
+		glClearColor(0.f, 0.f, 0.25f, 0.f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		glUseProgram(water_shader_prog);
 
-		glm::mat4 projection = glm::perspective(glm::radians(camera_.GetVerticalFOV()), (float)screen_width / (float)screen_height, camera_.GetNearPlane(), camera_.GetFarPlane());
+		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)screen_width / (float)screen_height, 0.1f, 100.f);
 		glUniformMatrix4fv(glGetUniformLocation(water_shader_prog, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-		glm::mat4 view = glm::lookAt(camera_position, camera_position + camera_.GetDirection(), up);
+
+		glm::mat4 view = camera.GetViewMatrix();
 		glUniformMatrix4fv(glGetUniformLocation(water_shader_prog, "view"), 1, GL_FALSE, glm::value_ptr(view));
 
-		//glm::mat4 view = glm::lookAt(camera_pos, camera_pos + camera_front, up);
+		//TODO model matrix implementation and add corresponding shader code.
+		//TODO implement more triangles to create mesh [next step].
 
 		glBindVertexArray(vao);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -217,7 +219,7 @@ int main()
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-		}
+	}
 
 	glDeleteBuffers(1, &vertex_vbo);
 	glDeleteBuffers(1, &element_vbo);
@@ -225,12 +227,12 @@ int main()
 
 	glfwTerminate();
 	return 0;
-	}
+}
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-	{
+{
 	glViewport(0, 0, width, height);
-	}
+}
 
 void processInput(GLFWwindow *window)
 {
@@ -242,27 +244,50 @@ void processInput(GLFWwindow *window)
 	float camera_speed = 2.5 * delta_time;
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
-		camera_pos += camera_speed * camera_front;
+		camera.ProcessKeyboard(FORWARD, delta_time);
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
-		camera_pos -= camera_speed * camera_front;
+		camera.ProcessKeyboard(BACKWARD, delta_time);
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
-		camera_pos -= glm::normalize(glm::cross(camera_front, up)) * camera_speed;
+		camera.ProcessKeyboard(LEFT, delta_time);
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
-		camera_pos += glm::normalize(glm::cross(camera_front, up)) * camera_speed;
+		camera.ProcessKeyboard(RIGHT, delta_time);
 	}
 }
 
-std::string StringFromFile(const std::string &filename)
+void mouse_callBack(GLFWwindow * window, double xPos, double yPos)
+{
+	if (mouseEnable)
 	{
+		lastX = xPos;
+		lastY = yPos;
+		mouseEnable = false;
+	}
+
+	float xOffset = xPos - lastX;
+	float yOffset = lastY - yPos;
+
+	lastX = xPos;
+	lastY = yPos;
+
+	camera.ProcessMouseMovement(xOffset, yOffset);
+}
+
+void scroll_callBack(GLFWwindow* window, double xOffset, double yOffset)
+{
+	camera.ProcessMouseScrollWheel(yOffset);
+}
+
+std::string StringFromFile(const std::string &filename)
+{
 	std::ifstream if_str(filename);
 	std::string content((std::istreambuf_iterator<char>(if_str)),
 		(std::istreambuf_iterator<char>()));
 
 	return content;
-	}
+}

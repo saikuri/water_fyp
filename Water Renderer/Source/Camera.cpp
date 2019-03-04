@@ -1,82 +1,93 @@
 #include "Camera.hpp"
 
-Camera::Camera()
+Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch) :
+	camera_front(glm::vec3(0.0f, 0.0f, -1.0f)), movement_speed(cam_speed), mouse_sensitivity(cam_sense), Zoom(cam_zoom)
 {
-	position = glm::vec3(0, 0, 0);
-	direction = glm::vec3(0, 0, -1);
-	vertical_field_of_view = 60;
-	near_plane_distance = 1;
-	far_plane_distance = 10000;
-	translation_speed = glm::vec3(0, 0, 0);
-	rotation_speed = glm::vec2(0, 0);
+	camera_position = position;
+	world_up_direction = up;
+	Yaw = yaw;
+	Pitch = pitch;
+	UpdateCameraVectors();
 }
 
-glm::vec3 Camera::GetPosition() const
+Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) :
+	camera_front(glm::vec3(0.0f, 0.0f, -1.0f)), movement_speed(cam_speed), mouse_sensitivity(cam_sense), Zoom(cam_zoom)
 {
-	return position;
+	camera_position = glm::vec3(posX, posY, posZ);
+	world_up_direction = glm::vec3(upX, upY, upZ);
+	Yaw = yaw;
+	Pitch = pitch;
+	UpdateCameraVectors();
 }
 
-void Camera::SetPosition(glm::vec3 p)
+glm::mat4 Camera::GetViewMatrix()
 {
-	position = p;
+	return glm::lookAt(camera_position, camera_position + camera_front, camera_up_direction);
 }
 
-glm::vec3 Camera::GetDirection() const
+void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 {
-	return direction;
+	float velocity = movement_speed * deltaTime;
+	if (direction == FORWARD)
+		camera_position += camera_front * velocity;
+	if (direction == BACKWARD)
+		camera_position -= camera_front * velocity;
+	if (direction == LEFT)
+		camera_position -= camera_right * velocity;
+	if (direction == RIGHT)
+		camera_position += camera_right * velocity;
 }
 
-void Camera::SetDirection(glm::vec3 d)
+void Camera::ProcessMouseMovement(float xOffset, float yOffset, GLboolean constrainPitch)
 {
-	direction = d;
+	xOffset *= mouse_sensitivity;
+	yOffset *= mouse_sensitivity;
+
+	Yaw += xOffset;
+	Pitch += yOffset;
+
+	if (constrainPitch)
+	{
+		if (Pitch > 89.0f)
+		{
+			Pitch = 89.0f;
+		}
+
+		if (Pitch < -89.0f)
+		{
+			Pitch = -89.0f;
+		}
+	}
+	UpdateCameraVectors();
 }
 
-float Camera::GetVerticalFOV() const
+void Camera::ProcessMouseScrollWheel(float yOffset)
 {
-	return vertical_field_of_view;
+	if (Zoom >= 1.0f && Zoom <= 45.0f)
+	{
+		Zoom -= yOffset;
+	}
+	
+	if (Zoom <= 1.0f)
+	{
+		Zoom = 1.0f;
+	}
+
+	if (Zoom >= 45.0f)
+	{
+		Zoom = 45.0f;
+	}
 }
 
-void Camera::SetVerticalFOV(float d)
+void Camera::UpdateCameraVectors()
 {
-	vertical_field_of_view = d;
+	glm::vec3 front;
+	front.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+	front.y = sin(glm::radians(Pitch));
+	front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+	camera_front = glm::normalize(front);
+
+	camera_right = glm::normalize(glm::cross(camera_front, world_up_direction));
+	camera_up_direction = glm::normalize(glm::cross(camera_right, camera_front));
 }
 
-float Camera::GetNearPlane() const
-{
-	return near_plane_distance;
-}
-
-void Camera::SetNearPlane(float n)
-{
-	near_plane_distance = n;
-}
-
-float Camera::GetFarPlane() const
-{
-	return far_plane_distance;
-}
-
-void Camera::SetFarPlane(float f)
-{
-	far_plane_distance = f;
-}
-
-glm::vec3 Camera::GetLinearVelocity() const
-{
-	return glm::vec3();
-}
-
-void Camera::SetLinearVelocity(glm::vec3 v)
-{
-	translation_speed = v;
-}
-
-glm::vec2 Camera::GetRotationalVelocity() const
-{
-	return glm::vec2();
-}
-
-void Camera::SetRotationalVelocity(glm::vec2 v)
-{
-	rotation_speed = v;
-}
