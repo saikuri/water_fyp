@@ -1,8 +1,12 @@
 #pragma once
-class Mesh
-{
-public:
-	Mesh();
-	~Mesh();
-};
+
+namespace pwgl {
+	class Mesh
+	{
+	public:
+		Mesh();
+		~Mesh();
+	};
+}
+
 

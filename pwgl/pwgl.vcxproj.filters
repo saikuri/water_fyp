@@ -39,6 +39,12 @@
     <ClInclude Include="Include\pwgl\pwgl_fwd.hpp">
       <Filter>Header Files\pwgl</Filter>
     </ClInclude>
+    <ClInclude Include="Include\pwgl\Instance.hpp">
+      <Filter>Header Files\pwgl</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\pwgl\GeometryBuilder.hpp">
+      <Filter>Header Files\pwgl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Geometry.cpp">
@@ -54,6 +60,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Types.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Instance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GeometryBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

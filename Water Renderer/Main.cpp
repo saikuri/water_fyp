@@ -212,6 +212,7 @@ int main()
 
 		//TODO model matrix implementation and add corresponding shader code.
 		//TODO implement more triangles to create mesh [next step].
+		glm::mat4 model = glm::mat4(1.0f);
 
 		glBindVertexArray(vao);
 		glDrawArrays(GL_TRIANGLES, 0, 3);

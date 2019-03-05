@@ -21,6 +21,8 @@
   <ItemGroup>
     <ClInclude Include="Include\pwgl\Config.hpp" />
     <ClInclude Include="Include\pwgl\Geometry.hpp" />
+    <ClInclude Include="Include\pwgl\GeometryBuilder.hpp" />
+    <ClInclude Include="Include\pwgl\Instance.hpp" />
     <ClInclude Include="Include\pwgl\Mesh.hpp" />
     <ClInclude Include="Include\pwgl\pch.h" />
     <ClInclude Include="Include\pwgl\pwgl.hpp" />
@@ -29,6 +31,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Geometry.cpp" />
+    <ClCompile Include="Source\GeometryBuilder.cpp" />
+    <ClCompile Include="Source\Instance.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\pch.cpp" />
     <ClCompile Include="Source\pwgl.cpp" />

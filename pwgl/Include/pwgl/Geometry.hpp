@@ -3,19 +3,16 @@
 #define __PWGL_GEOMETRY__
 
 #include "Types.hpp"
-
+#include "pwgl_fwd.hpp"
 #include <memory>
 
 namespace pwgl {
-	inline namespace pwgl_2 {
 
-
-		class Geometry
-		{
-		public:
-			Geometry();
-			~Geometry();
-		};
-	}
+	class Geometry
+	{
+	public:
+		Geometry();
+		~Geometry();
+	};
 }
 #endif // !__PWGL_GEOMETRY__
