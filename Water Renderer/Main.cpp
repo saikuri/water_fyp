@@ -4,10 +4,13 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "Source/Camera.hpp"
 #include <vector>
+#include <unordered_map>
 
 #include <iostream>
 #include <string>
 #include <fstream>
+
+using namespace std;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -25,6 +28,31 @@ bool mouseEnable = true;
 
 float delta_time = 0.0f;
 float last_frame = 0.0f;
+
+typedef unsigned int MeshID;
+
+std::unordered_map<MeshID, MeshGL> meshes;
+
+struct Vertex
+{
+	glm::vec3 position;
+	glm::vec3 normal;
+	glm::vec2 texCoord;
+};
+
+struct Texture
+{
+	unsigned int id;
+	string type;
+};
+
+struct MeshGL
+{
+	GLuint first_element_index;
+	GLuint first_vertex_index;
+	GLuint element_count;
+	GLuint instance_count;
+};
 
 int main()
 {
@@ -59,26 +87,17 @@ int main()
 
 	glEnable(GL_DEPTH_TEST);
 
-	// I feel like these could be changed significantly by adding in GLM library.
-	float vertices[] = {
-		0.5f, 0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		-0.5f, -0.5f, 0.0f,
-		-0.5f, 0.5f, 0.0f
-	};
-
-	// I feel like these could be changed significantly by adding in GLM library.
-	GLint indices[] = {
-		0, 1, 3,
-		1, 2, 3
-	};
+	std::vector<Vertex> vertices;
+	std::vector<unsigned int> elements;
+	std:vector<Texture> textures;
 
 	// Generating vertex buffer object for position.
 	GLuint vertex_vbo{ 0 };
 	glGenBuffers(1, &vertex_vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
 	glBufferData(GL_ARRAY_BUFFER,
-		sizeof(vertices), vertices,
+		vertices.size() * sizeof(Vertex),
+		vertices.data(),
 		GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -86,7 +105,8 @@ int main()
 	glGenBuffers(1, &element_vbo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_vbo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-		sizeof(indices), indices,
+		elements.size() * sizeof(unsigned int),
+		elements.data(),
 		GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
@@ -98,7 +118,22 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
-		3 * sizeof(float), (void*)0);
+		sizeof(Vertex), (void*)0);
+
+	//glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
+	//glEnableVertexAttribArray(0);
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
+	//	sizeof(Vertex), (void*)offsetof(Vertex, position));
+
+	//glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,
+		sizeof(Vertex), (void*)offsetof(Vertex, normal));
+
+	//glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE,
+		sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -190,7 +225,7 @@ int main()
 
 		glBindVertexArray(vao);
 		//glDrawArrays(GL_TRIANGLES, 0, 3);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, elements.size(), GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
