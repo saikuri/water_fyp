@@ -31,8 +31,6 @@ float last_frame = 0.0f;
 
 typedef unsigned int MeshID;
 
-std::unordered_map<MeshID, MeshGL> meshes;
-
 struct Vertex
 {
 	glm::vec3 position;
@@ -53,6 +51,16 @@ struct MeshGL
 	GLuint element_count;
 	GLuint instance_count;
 };
+
+struct Mesh
+{
+	GLuint vertex_vbo{ 0 };
+	GLuint element_vbo{ 0 };
+	GLuint vao{ 0 };
+	int element_count{ 0 };
+};
+
+std::unordered_map<MeshID, MeshGL> meshes;
 
 int main()
 {
@@ -87,9 +95,43 @@ int main()
 
 	glEnable(GL_DEPTH_TEST);
 
-	std::vector<Vertex> vertices;
+	std::vector<Vertex> vertices(4);
 	std::vector<unsigned int> elements;
 	std:vector<Texture> textures;
+
+	std::vector<float> verts = {
+		0.5f, 0.5f, 0.0f,
+		0.5f, -0.5f, 0.0f,
+		-0.5f, -0.5f, 0.0f,
+		-0.5f, 0.5f, 0.0f
+	};
+
+	std::vector<GLint> indices = {
+	0, 1, 3,
+	1, 2, 3
+	};
+
+	vertices[0].position = glm::vec3(0.5f, 0.5f, 0.0f);
+	vertices[1].position = glm::vec3(0.5f, -0.5f, 0.0f);
+	vertices[2].position = glm::vec3(-0.5f, -0.5f, 0.0f);
+	vertices[3].position = glm::vec3(-0.5f, 0.5f, 0.0f);
+
+	//vertices.size() = verts;
+	//verts = vertices.size();
+
+	for (int i = 0; i < vertices.size(); i++)
+	{
+		Vertex vert;
+		vert.position = vertices[i].position;
+		vert.normal = vertices[i].normal;
+
+		if (textures.size() > 0)
+		{
+			vert.texCoord = vertices[i].texCoord;
+		}
+
+		vertices.push_back(vert);
+	}
 
 	// Generating vertex buffer object for position.
 	GLuint vertex_vbo{ 0 };
