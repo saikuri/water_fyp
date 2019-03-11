@@ -95,54 +95,57 @@ int main()
 
 	glEnable(GL_DEPTH_TEST);
 
-	std::vector<Vertex> vertices(4);
+	//std::vector<Vertex> vertices(4);
+	std::vector<Vertex> vertices;
 	std::vector<unsigned int> elements;
-	std:vector<Texture> textures;
+	std::vector<Texture> textures;
 
-	//std::vector<float> verts = {
-	//	0.5f, 0.5f, 0.0f,
-	//	0.5f, -0.5f, 0.0f,
-	//	-0.5f, -0.5f, 0.0f,
-	//	-0.5f, 0.5f, 0.0f
-	//};
-
-	//std::vector<GLint> indices = {
-	//0, 1, 3,
-	//1, 2, 3
-	//};
-
-	vertices[0].position = glm::vec3(0.5f, 0.5f, 0.0f);
+	/*vertices[0].position = glm::vec3(0.5f, 0.5f, 0.0f);
 	vertices[1].position = glm::vec3(0.5f, -0.5f, 0.0f);
 	vertices[2].position = glm::vec3(-0.5f, -0.5f, 0.0f);
-	vertices[3].position = glm::vec3(-0.5f, 0.5f, 0.0f);
+	vertices[3].position = glm::vec3(-0.5f, 0.5f, 0.0f);*/
 
 	elements = { 0, 1, 3, 1, 2, 3 };
 
-	//elements[0] = 0;
-	////elements[1] = 1, 2, 3, 4, 5, 6;
-	//elements[1] = 1;
-	//elements[2] = 3;
-	//elements[3] = 1;
-	//elements[4] = 2;
-	//elements[5] = 3;
+	//std::vector<glm::vec3> positions;
+	unsigned int cell_width = 128;
+	unsigned int cell_height = 128;
+	unsigned int vertex_width = cell_width + 1;
+	unsigned int vertex_height = cell_height + 1;
+	float cell_size = 1.0f;
 
-	//vertices.size() = verts;
-	//verts = vertices.size();
-
-	for (int i = 0; i < vertices.size(); i++)
+	for (int x = 0; x < vertex_width; x++)
 	{
-		Vertex vert;
-		vert.position = vertices[i].position;
-		vert.normal = vertices[i].normal;
-
-		if (textures.size() > 0)
+		for (int z = 0; z < vertex_height; z++)
 		{
-			vert.texCoord = vertices[i].texCoord;
-			//vert.texCoord = (const glm::vec2 &)textures[i];
-		}
+			Vertex p;
+			p.position = glm::vec3(x * cell_size, 0, z * cell_size);
+			vertices.push_back(p);
+			//positions.push_back(glm::vec3(x * cell_size, 0, z * cell_size));
 
-		//vertices.push_back(vert);
+			if (x % 2 == 0 && z % 2 == 0)
+			{
+				elements.push_back(cell_width);
+				elements.push_back(cell_width + 1);
+				elements.push_back(cell_width + (cell_height + 2)); //TODO look into triangulate my terrain exercise [mesh.cpp]
+			}
+		}
 	}
+
+	//for (int i = 0; i < vertices.size(); i++)
+	//{
+	//	Vertex vert;
+	//	vert.position = vertices[i].position;
+	//	vert.normal = vertices[i].normal;
+
+	//	if (textures.size() > 0)
+	//	{
+	//		vert.texCoord = vertices[i].texCoord;
+	//		//vert.texCoord = (const glm::vec2 &)textures[i];
+	//	}
+	//	vertices[i]
+	//	//vertices.push_back(vert);
+	//}
 
 	// Generating vertex buffer object for position.
 	GLuint vertex_vbo{ 0 };
