@@ -29,6 +29,8 @@ bool mouseEnable = true;
 float delta_time = 0.0f;
 float last_frame = 0.0f;
 
+bool wire_mode = false; // Check at a later date.
+
 typedef unsigned int MeshID;
 
 struct Vertex
@@ -46,23 +48,21 @@ struct Texture
 	string type;
 };
 
-struct MeshGL
-{
-	GLuint first_element_index;
-	GLuint first_vertex_index;
-	GLuint element_count;
-	GLuint instance_count;
-};
+//struct MeshGL
+//{
+//	GLuint first_element_index;
+//	GLuint first_vertex_index;
+//	GLuint element_count;
+//	GLuint instance_count;
+//};
 
-struct Mesh
-{
-	GLuint vertex_vbo{ 0 };
-	GLuint element_vbo{ 0 };
-	GLuint vao{ 0 };
-	int element_count{ 0 };
-};
-
-std::unordered_map<MeshID, MeshGL> meshes;
+//struct Mesh
+//{
+//	GLuint vertex_vbo{ 0 };
+//	GLuint element_vbo{ 0 };
+//	GLuint vao{ 0 };
+//	int element_count{ 0 };
+//};
 
 int main()
 {
@@ -95,63 +95,60 @@ int main()
 		return -1;
 	}
 
+	//////////////////// MESH ////////////////////
 	glEnable(GL_DEPTH_TEST);
 
-	//std::vector<Vertex> vertices(4);
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> elements;
 	std::vector<Texture> textures;
 
-	//vertices[0].position = glm::vec3(0.5f, 0.5f, 0.0f);
-	//vertices[1].position = glm::vec3(0.5f, -0.5f, 0.0f);
-	//vertices[2].position = glm::vec3(-0.5f, -0.5f, 0.0f);
-	//vertices[3].position = glm::vec3(-0.5f, 0.5f, 0.0f);
-
-	//elements = { 0, 1, 3, 1, 2, 3 };
-
-	//std::vector<glm::vec3> positions;
 	unsigned int cell_width = 128;
 	unsigned int cell_height = 128;
 	unsigned int vertex_width = cell_width + 1;
 	unsigned int vertex_height = cell_height + 1;
 	float cell_size = 1.0f;
 
+	for (int z = 0; z < vertex_height + 1; z++)
+	{
+		for (int x = 0; x < vertex_width + 1; x++)
+		{
+			Vertex p;
+			p.position = glm::vec3(x * cell_size, 0, z * cell_size);
+			p.normal = glm::vec3(0, 0, 0);
+			vertices.push_back(p);
+		}
+	}
+
 	for (int z = 0; z < vertex_height; z++)
 	{
 		for (int x = 0; x < vertex_width; x++)
 		{
-			Vertex p;
-			p.position = glm::vec3(z * cell_size, 0, x * cell_size);
-			p.normal = glm::vec3(0.0f, 0.0f, 0.0f);
-			vertices.push_back(p);
-			//positions.push_back(glm::vec3(x * cell_size, 0, z * cell_size));
-
-			int mesh_index = z * (vertex_height + 1) + x;
+			int index = z * (vertex_height + 1) + x;
 
 			if ((x % 2 == 0 && z % 2 == 0) || (x % 2 == 1 && z % 2 == 1))
 			{
 				// Creating the first triangle of the quad.
-				elements.push_back(z * vertex_width + x + 1);
-				elements.push_back(z * vertex_width + x + vertex_width + 1);
-				elements.push_back(z * vertex_width + x + vertex_width); //TODO look into triangulate my terrain exercise [mesh.cpp]
+				elements.push_back(index);
+				elements.push_back(index + 1);
+				elements.push_back(index + (vertex_width + 2));
 
 				// Creating the second triangle of the quad.
-				elements.push_back(z * vertex_width + x);
-				elements.push_back(z * vertex_width + x + 1);
-				elements.push_back(z * vertex_width + x + vertex_width);
+				elements.push_back(index);
+				elements.push_back(index + (vertex_width + 2));
+				elements.push_back(index + (vertex_width + 1));
 			}
 
 			else
 			{
 				// Creating the first triangle of the quad.
-				elements.push_back(z * vertex_width + x + vertex_width + 1);
-				elements.push_back(z * vertex_width + x + vertex_width);
-				elements.push_back(z * vertex_width + x);
+				elements.push_back(index);
+				elements.push_back(index + 1);
+				elements.push_back(index + (vertex_width + 1));
 
 				// Creating the second triangle of the quad.
-				elements.push_back(z * vertex_width + x + 1);
-				elements.push_back(z * vertex_width + x + vertex_width + 1);
-				elements.push_back(z * vertex_width + x);
+				elements.push_back(index + 1);
+				elements.push_back(index + (vertex_width + 2));
+				elements.push_back(index + (vertex_width + 1));
 			}
 		}
 	}
@@ -195,22 +192,15 @@ int main()
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_vbo);
 
-	//glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
-	//glEnableVertexAttribArray(0);
-	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
-	//	sizeof(Vertex), (void*)0);
-
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
 		sizeof(Vertex), (void*)offsetof(Vertex, position));
 
-	//glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,
 		sizeof(Vertex), (void*)offsetof(Vertex, normal));
 
-	//glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE,
 		sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
@@ -225,6 +215,8 @@ int main()
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+
+	//////////////////// SHADER ////////////////////
 
 	// Shader compile status.
 	GLint compile_status = GL_FALSE;
@@ -309,15 +301,11 @@ int main()
 		glm::mat4 view = camera.GetViewMatrix();
 		glUniformMatrix4fv(glGetUniformLocation(water_shader_prog, "view"), 1, GL_FALSE, glm::value_ptr(view));
 
-		//TODO model matrix implementation and add corresponding shader code.
-		//TODO implement more triangles to create mesh [next step].
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::scale(model, glm::vec3(modelScale));
 		glUniformMatrix4fv(glGetUniformLocation(water_shader_prog, "model"), 1, GL_FALSE, glm::value_ptr(model));
 
 		glBindVertexArray(vao);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		//glDrawArrays(GL_TRIANGLES, 0, 3);
 		glDrawElements(GL_TRIANGLES, elements.size(), GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
@@ -335,6 +323,11 @@ int main()
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
+}
+
+void toggleShading()
+{
+	wire_mode = !wire_mode;
 }
 
 void processInput(GLFWwindow *window)
@@ -360,6 +353,20 @@ void processInput(GLFWwindow *window)
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
 		camera.ProcessKeyboard(RIGHT, delta_time);
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_F2) == GLFW_PRESS)
+	{
+		toggleShading();
+	}
+	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 }
 
