@@ -36,6 +36,8 @@ struct Vertex
 	glm::vec3 position;
 	glm::vec3 normal;
 	glm::vec2 texCoord;
+	glm::vec3 tangent;
+	glm::vec3 bitangent;
 };
 
 struct Texture
@@ -100,10 +102,10 @@ int main()
 	std::vector<unsigned int> elements;
 	std::vector<Texture> textures;
 
-	/*vertices[0].position = glm::vec3(0.5f, 0.5f, 0.0f);
-	vertices[1].position = glm::vec3(0.5f, -0.5f, 0.0f);
-	vertices[2].position = glm::vec3(-0.5f, -0.5f, 0.0f);
-	vertices[3].position = glm::vec3(-0.5f, 0.5f, 0.0f);*/
+	//vertices[0].position = glm::vec3(0.5f, 0.5f, 0.0f);
+	//vertices[1].position = glm::vec3(0.5f, -0.5f, 0.0f);
+	//vertices[2].position = glm::vec3(-0.5f, -0.5f, 0.0f);
+	//vertices[3].position = glm::vec3(-0.5f, 0.5f, 0.0f);
 
 	elements = { 0, 1, 3, 1, 2, 3 };
 
@@ -123,11 +125,19 @@ int main()
 			vertices.push_back(p);
 			//positions.push_back(glm::vec3(x * cell_size, 0, z * cell_size));
 
+			int mesh_index = z * (cell_width + 1) + x;
+
 			if (x % 2 == 0 && z % 2 == 0)
 			{
+				// Creating the first triangle of the quad.
 				elements.push_back(cell_width);
 				elements.push_back(cell_width + 1);
 				elements.push_back(cell_width + (cell_height + 2)); //TODO look into triangulate my terrain exercise [mesh.cpp]
+
+				// Creating the second triangle of the quad.
+				elements.push_back(cell_width);
+				elements.push_back(cell_width + (cell_height +2));
+				elements.push_back(cell_width + (cell_height + 1));
 			}
 		}
 	}
@@ -190,6 +200,14 @@ int main()
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE,
 		sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
+
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE,
+		sizeof(Vertex), (void*)offsetof(Vertex, tangent));
+
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE,
+		sizeof(Vertex), (void*)offsetof(Vertex, bitangent));
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -262,6 +280,8 @@ int main()
 		delta_time = currentFrame - last_frame;
 		last_frame = currentFrame;
 
+		float modelScale = 0.5f;
+
 		processInput(window);
 
 		glClearColor(0.f, 0.f, 0.25f, 0.f);
@@ -278,6 +298,8 @@ int main()
 		//TODO model matrix implementation and add corresponding shader code.
 		//TODO implement more triangles to create mesh [next step].
 		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(modelScale));
+		glUniformMatrix4fv(glGetUniformLocation(water_shader_prog, "model"), 1, GL_FALSE, glm::value_ptr(model));
 
 		glBindVertexArray(vao);
 		//glDrawArrays(GL_TRIANGLES, 0, 3);
