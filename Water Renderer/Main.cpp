@@ -21,7 +21,7 @@ std::string StringFromFile(const std::string &filename);
 const unsigned int screen_width = 1280;
 const unsigned int screen_height = 720;
 
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(0.0f, 1.0f, 3.0f));
 float lastX = screen_width / 2.0f;
 float lastY = screen_height / 2.0f;
 bool mouseEnable = true;
@@ -107,7 +107,7 @@ int main()
 	//vertices[2].position = glm::vec3(-0.5f, -0.5f, 0.0f);
 	//vertices[3].position = glm::vec3(-0.5f, 0.5f, 0.0f);
 
-	elements = { 0, 1, 3, 1, 2, 3 };
+	//elements = { 0, 1, 3, 1, 2, 3 };
 
 	//std::vector<glm::vec3> positions;
 	unsigned int cell_width = 128;
@@ -116,28 +116,42 @@ int main()
 	unsigned int vertex_height = cell_height + 1;
 	float cell_size = 1.0f;
 
-	for (int x = 0; x < vertex_width; x++)
+	for (int z = 0; z < vertex_height; z++)
 	{
-		for (int z = 0; z < vertex_height; z++)
+		for (int x = 0; x < vertex_width; x++)
 		{
 			Vertex p;
-			p.position = glm::vec3(x * cell_size, 0, z * cell_size);
+			p.position = glm::vec3(z * cell_size, 0, x * cell_size);
+			p.normal = glm::vec3(0.0f, 0.0f, 0.0f);
 			vertices.push_back(p);
 			//positions.push_back(glm::vec3(x * cell_size, 0, z * cell_size));
 
-			int mesh_index = z * (cell_width + 1) + x;
+			int mesh_index = z * (vertex_height + 1) + x;
 
-			if (x % 2 == 0 && z % 2 == 0)
+			if ((x % 2 == 0 && z % 2 == 0) || (x % 2 == 1 && z % 2 == 1))
 			{
 				// Creating the first triangle of the quad.
-				elements.push_back(cell_width);
-				elements.push_back(cell_width + 1);
-				elements.push_back(cell_width + (cell_height + 2)); //TODO look into triangulate my terrain exercise [mesh.cpp]
+				elements.push_back(z * vertex_width + x + 1);
+				elements.push_back(z * vertex_width + x + vertex_width + 1);
+				elements.push_back(z * vertex_width + x + vertex_width); //TODO look into triangulate my terrain exercise [mesh.cpp]
 
 				// Creating the second triangle of the quad.
-				elements.push_back(cell_width);
-				elements.push_back(cell_width + (cell_height +2));
-				elements.push_back(cell_width + (cell_height + 1));
+				elements.push_back(z * vertex_width + x);
+				elements.push_back(z * vertex_width + x + 1);
+				elements.push_back(z * vertex_width + x + vertex_width);
+			}
+
+			else
+			{
+				// Creating the first triangle of the quad.
+				elements.push_back(z * vertex_width + x + vertex_width + 1);
+				elements.push_back(z * vertex_width + x + vertex_width);
+				elements.push_back(z * vertex_width + x);
+
+				// Creating the second triangle of the quad.
+				elements.push_back(z * vertex_width + x + 1);
+				elements.push_back(z * vertex_width + x + vertex_width + 1);
+				elements.push_back(z * vertex_width + x);
 			}
 		}
 	}
@@ -302,6 +316,7 @@ int main()
 		glUniformMatrix4fv(glGetUniformLocation(water_shader_prog, "model"), 1, GL_FALSE, glm::value_ptr(model));
 
 		glBindVertexArray(vao);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		//glDrawArrays(GL_TRIANGLES, 0, 3);
 		glDrawElements(GL_TRIANGLES, elements.size(), GL_UNSIGNED_INT, 0);
 
