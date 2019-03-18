@@ -48,6 +48,7 @@ struct Texture
 	string type;
 };
 
+//TODO: to be used later for instancing.
 //struct MeshGL
 //{
 //	GLuint first_element_index;
@@ -319,6 +320,8 @@ int main()
 	glfwTerminate();
 	return 0;
 }
+
+//////////////////// UTILITY ////////////////////
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
