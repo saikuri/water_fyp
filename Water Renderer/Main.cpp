@@ -333,6 +333,20 @@ void toggleShading()
 	wire_mode = !wire_mode;
 }
 
+//TODO: Look into applying noise into my mesh
+void ApplyNoise()
+{
+}
+
+float Brownian(glm::vec3& pos)
+{
+}
+
+//TODO: Look into applying displacement into my mesh
+void Displacement()
+{
+}
+
 void processInput(GLFWwindow *window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -400,6 +414,16 @@ std::string StringFromFile(const std::string &filename)
 {
 	std::ifstream if_str(filename);
 	std::string content((std::istreambuf_iterator<char>(if_str)),
+		(std::istreambuf_iterator<char>()));
+
+	return content;
+}
+
+//TODO: Would I need to read directly into an image class?
+std::vector<uint8_t> ImageFromFile(const std::string &filename)
+{
+	std::ifstream if_str(filename, std::ios::binary);
+	std::vector<uint8_t> content((std::istreambuf_iterator<char>(if_str)),
 		(std::istreambuf_iterator<char>()));
 
 	return content;
