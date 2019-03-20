@@ -5,7 +5,7 @@
 #include "Source/Camera.hpp"
 #include <vector>
 #include <unordered_map>
-
+#include <pwgl/Mesh.hpp>
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -22,6 +22,7 @@ const unsigned int screen_width = 1280;
 const unsigned int screen_height = 720;
 
 Camera camera(glm::vec3(0.0f, 1.0f, 3.0f));
+//Camera camera(45.0f, 30.0f, 60.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f);
 float lastX = screen_width / 2.0f;
 float lastY = screen_height / 2.0f;
 bool mouseEnable = true;
@@ -42,11 +43,7 @@ struct Vertex
 	glm::vec3 bitangent;
 };
 
-struct Texture
-{
-	unsigned int id;
-	string type;
-};
+GLuint water_tex;
 
 //TODO: to be used later for instancing.
 //struct MeshGL
@@ -103,7 +100,7 @@ int main()
 
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> elements;
-	std::vector<Texture> textures;
+	//std::vector<Texture> textures;
 
 	unsigned int cell_width = 128;
 	unsigned int cell_height = 128;
@@ -219,6 +216,22 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
+	//////////////////// TEXTURE ///////////////////
+	glGenTextures(1, &water_tex);
+	glBindTexture(GL_TEXTURE_2D, water_tex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 128, 128, 0, GL_RGB, GL_FLOAT, nullptr);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
 	//////////////////// SHADER ////////////////////
 
 	// Shader compile status.
@@ -298,6 +311,10 @@ int main()
 
 		glUseProgram(water_shader_prog);
 
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, water_tex); // Texture data to use.
+		glUniform1i(glGetUniformLocation(water_shader_prog, "water_tex"), 0);
+
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)screen_width / (float)screen_height, 0.1f, 100.f);
 		glUniformMatrix4fv(glGetUniformLocation(water_shader_prog, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
@@ -319,6 +336,8 @@ int main()
 	glDeleteBuffers(1, &element_vbo);
 	glDeleteVertexArrays(1, &vao);
 
+	glDeleteTextures(1, &water_tex);
+
 	glfwTerminate();
 	return 0;
 }
@@ -336,39 +355,39 @@ void toggleShading()
 }
 
 //TODO: Look into applying noise into my mesh
-void ApplyNoise()
-{
-	//std::vector<Vertex> p;
-	//Vertex p;
+//void ApplyNoise()
+//{
+//	//std::vector<Vertex> p;
+//	//Vertex p;
+//
+//	for (int i = 0; i < vertices.size(); i++)
+//	{
+//		auto& v = vertices[i].position;
+//		auto& n = vertices[i].normal;
+//
+//		auto result = Brownian(v);
+//		vertices[i].position += n * result;
+//	}
+//}
 
-	for (int i = 0; i < vertices.size(); i++)
-	{
-		auto& v = vertices[i].position;
-		auto& n = vertices[i].normal;
-
-		auto result = Brownian(v);
-		vertices[i].position += n * result;
-	}
-}
-
-float Brownian(glm::vec3& pos)
-{
-	float octaves = 8.0f;
-	float lacunarity = 2.0f;
-	float gain = 0.5f;
-	int amp = 100;
-	float result = 0.0f;
-	float frequency = 0.005f;
-
-	for (int i = 0; i < octaves; i++)
-	{
-
-		amp *= gain;
-		frequency *= lacunarity;
-	}
-
-	return result;
-}
+//float Brownian(glm::vec3& pos)
+//{
+//	float octaves = 8.0f;
+//	float lacunarity = 2.0f;
+//	float gain = 0.5f;
+//	int amp = 100;
+//	float result = 0.0f;
+//	float frequency = 0.005f;
+//
+//	for (int i = 0; i < octaves; i++)
+//	{
+//
+//		amp *= gain;
+//		frequency *= lacunarity;
+//	}
+//
+//	return result;
+//}
 
 //TODO: Look into applying displacement into my mesh
 void Displacement()
@@ -382,7 +401,7 @@ void processInput(GLFWwindow *window)
 		glfwSetWindowShouldClose(window, true);
 	}
 
-	float camera_speed = 2.5 * delta_time;
+	float camera_speed = 5 * delta_time;
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
 		camera.ProcessKeyboard(FORWARD, delta_time);
