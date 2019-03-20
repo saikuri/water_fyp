@@ -65,6 +65,8 @@ struct Texture
 //	int element_count{ 0 };
 //};
 
+std::vector<Vertex> vertices;
+
 int main()
 {
 	// Initialise and configure GLFW.
@@ -336,10 +338,36 @@ void toggleShading()
 //TODO: Look into applying noise into my mesh
 void ApplyNoise()
 {
+	//std::vector<Vertex> p;
+	//Vertex p;
+
+	for (int i = 0; i < vertices.size(); i++)
+	{
+		auto& v = vertices[i].position;
+		auto& n = vertices[i].normal;
+
+		auto result = Brownian(v);
+		vertices[i].position += n * result;
+	}
 }
 
 float Brownian(glm::vec3& pos)
 {
+	float octaves = 8.0f;
+	float lacunarity = 2.0f;
+	float gain = 0.5f;
+	int amp = 100;
+	float result = 0.0f;
+	float frequency = 0.005f;
+
+	for (int i = 0; i < octaves; i++)
+	{
+
+		amp *= gain;
+		frequency *= lacunarity;
+	}
+
+	return result;
 }
 
 //TODO: Look into applying displacement into my mesh
