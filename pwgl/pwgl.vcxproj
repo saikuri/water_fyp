@@ -24,19 +24,29 @@
     <ClInclude Include="Include\pwgl\GeometryBuilder.hpp" />
     <ClInclude Include="Include\pwgl\Instance.hpp" />
     <ClInclude Include="Include\pwgl\Mesh.hpp" />
-    <ClInclude Include="Include\pwgl\pch.h" />
     <ClInclude Include="Include\pwgl\pwgl.hpp" />
     <ClInclude Include="Include\pwgl\pwgl_fwd.hpp" />
     <ClInclude Include="Include\pwgl\Types.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Geometry.cpp" />
-    <ClCompile Include="Source\GeometryBuilder.cpp" />
-    <ClCompile Include="Source\Instance.cpp" />
-    <ClCompile Include="Source\Mesh.cpp" />
-    <ClCompile Include="Source\pch.cpp" />
-    <ClCompile Include="Source\pwgl.cpp" />
-    <ClCompile Include="Source\Types.cpp" />
+    <ClCompile Include="Source\Geometry.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Source\GeometryBuilder.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Source\Instance.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Source\Mesh.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Source\pwgl.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Source\Types.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

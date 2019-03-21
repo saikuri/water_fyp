@@ -1,4 +1,3 @@
-#include "pwgl/pch.h"
 #include "pwgl/Types.hpp"
 
 using namespace pwgl;

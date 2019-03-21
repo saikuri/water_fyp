@@ -27,9 +27,6 @@
     <ClInclude Include="Include\pwgl\Mesh.hpp">
       <Filter>Header Files\pwgl</Filter>
     </ClInclude>
-    <ClInclude Include="Include\pwgl\pch.h">
-      <Filter>Header Files\pwgl</Filter>
-    </ClInclude>
     <ClInclude Include="Include\pwgl\Types.hpp">
       <Filter>Header Files\pwgl</Filter>
     </ClInclude>
@@ -51,9 +48,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Mesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\pwgl.cpp">

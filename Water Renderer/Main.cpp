@@ -10,13 +10,11 @@
 #include <string>
 #include <fstream>
 
-using namespace std;
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow *window);
-void mouse_callBack(GLFWwindow* window, double xPos, double yPos);
-void scroll_callBack(GLFWwindow* window, double xOffset, double yOffset);
-std::string StringFromFile(const std::string &filename);
+void framebuffer_Size_CallBack(GLFWwindow* window, int width, int height);
+void process_Input(GLFWwindow *window);
+void mouse_CallBack(GLFWwindow* window, double xPos, double yPos);
+void scroll_CallBack(GLFWwindow* window, double xOffset, double yOffset);
+std::string string_FromFile(const std::string &filename);
 
 const unsigned int screen_width = 1280;
 const unsigned int screen_height = 720;
@@ -34,14 +32,16 @@ bool wire_mode = false; // Check at a later date.
 
 typedef unsigned int MeshID;
 
-struct Vertex
-{
-	glm::vec3 position;
-	glm::vec3 normal;
-	glm::vec2 texCoord;
-	glm::vec3 tangent;
-	glm::vec3 bitangent;
-};
+pwgl::Mesh mesh_;
+
+//struct Vertex
+//{
+//	glm::vec3 position;
+//	glm::vec3 normal;
+//	glm::vec2 texCoord;
+//	glm::vec3 tangent;
+//	glm::vec3 bitangent;
+//};
 
 GLuint water_tex;
 
@@ -62,7 +62,7 @@ GLuint water_tex;
 //	int element_count{ 0 };
 //};
 
-std::vector<Vertex> vertices;
+//std::vector<Vertex> vertices;
 
 int main()
 {
@@ -82,9 +82,9 @@ int main()
 	}
 
 	glfwMakeContextCurrent(window);
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	glfwSetCursorPosCallback(window, mouse_callBack);
-	glfwSetScrollCallback(window, scroll_callBack);
+	glfwSetFramebufferSizeCallback(window, framebuffer_Size_CallBack);
+	glfwSetCursorPosCallback(window, mouse_CallBack);
+	glfwSetScrollCallback(window, scroll_CallBack);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -98,60 +98,64 @@ int main()
 	//////////////////// MESH ////////////////////
 	glEnable(GL_DEPTH_TEST);
 
-	std::vector<Vertex> vertices;
-	std::vector<unsigned int> elements;
+	//mesh_.populate_Verts();
+	//mesh_.build_Mesh();
+	//mesh_.create_Mesh();
+
+	//std::vector<Vertex> vertices;
+	//std::vector<unsigned int> elements;
 	//std::vector<Texture> textures;
 
-	unsigned int cell_width = 128;
-	unsigned int cell_height = 128;
-	unsigned int vertex_width = cell_width + 1;
-	unsigned int vertex_height = cell_height + 1;
-	float cell_size = 1.0f;
+	//unsigned int cell_width = 128;
+	//unsigned int cell_height = 128;
+	//unsigned int vertex_width = cell_width + 1;
+	//unsigned int vertex_height = cell_height + 1;
+	//float cell_size = 1.0f;
 
-	for (int z = 0; z < vertex_height + 1; z++)
-	{
-		for (int x = 0; x < vertex_width + 1; x++)
-		{
-			Vertex p;
-			p.position = glm::vec3(x * cell_size, 0, z * cell_size);
-			p.normal = glm::vec3(0, 0, 0);
-			vertices.push_back(p);
-		}
-	}
+	//for (int z = 0; z < vertex_height + 1; z++)
+	//{
+	//	for (int x = 0; x < vertex_width + 1; x++)
+	//	{
+	//		Vertex p;
+	//		p.position = glm::vec3(x * cell_size, 0, z * cell_size);
+	//		p.normal = glm::vec3(0, 0, 0);
+	//		vertices.push_back(p);
+	//	}
+	//}
 
-	for (int z = 0; z < vertex_height; z++)
-	{
-		for (int x = 0; x < vertex_width; x++)
-		{
-			int index = z * (vertex_height + 1) + x;
+	//for (int z = 0; z < vertex_height; z++)
+	//{
+	//	for (int x = 0; x < vertex_width; x++)
+	//	{
+	//		int index = z * (vertex_height + 1) + x;
 
-			if ((x % 2 == 0 && z % 2 == 0) || (x % 2 == 1 && z % 2 == 1))
-			{
-				// Creating the first triangle of the quad.
-				elements.push_back(index);
-				elements.push_back(index + 1);
-				elements.push_back(index + (vertex_width + 2));
+	//		if ((x % 2 == 0 && z % 2 == 0) || (x % 2 == 1 && z % 2 == 1))
+	//		{
+	//			// Creating the first triangle of the quad.
+	//			elements.push_back(index);
+	//			elements.push_back(index + 1);
+	//			elements.push_back(index + (vertex_width + 2));
 
-				// Creating the second triangle of the quad.
-				elements.push_back(index);
-				elements.push_back(index + (vertex_width + 2));
-				elements.push_back(index + (vertex_width + 1));
-			}
+	//			// Creating the second triangle of the quad.
+	//			elements.push_back(index);
+	//			elements.push_back(index + (vertex_width + 2));
+	//			elements.push_back(index + (vertex_width + 1));
+	//		}
 
-			else
-			{
-				// Creating the first triangle of the quad.
-				elements.push_back(index);
-				elements.push_back(index + 1);
-				elements.push_back(index + (vertex_width + 1));
+	//		else
+	//		{
+	//			// Creating the first triangle of the quad.
+	//			elements.push_back(index);
+	//			elements.push_back(index + 1);
+	//			elements.push_back(index + (vertex_width + 1));
 
-				// Creating the second triangle of the quad.
-				elements.push_back(index + 1);
-				elements.push_back(index + (vertex_width + 2));
-				elements.push_back(index + (vertex_width + 1));
-			}
-		}
-	}
+	//			// Creating the second triangle of the quad.
+	//			elements.push_back(index + 1);
+	//			elements.push_back(index + (vertex_width + 2));
+	//			elements.push_back(index + (vertex_width + 1));
+	//		}
+	//	}
+	//}
 
 	//for (int i = 0; i < vertices.size(); i++)
 	//{
@@ -169,68 +173,68 @@ int main()
 	//}
 
 	// Generating vertex buffer object for position.
-	GLuint vertex_vbo{ 0 };
-	glGenBuffers(1, &vertex_vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
-	glBufferData(GL_ARRAY_BUFFER,
-		vertices.size() * sizeof(Vertex),
-		vertices.data(),
-		GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//GLuint vertex_vbo{ 0 };
+	//glGenBuffers(1, &vertex_vbo);
+	//glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
+	//glBufferData(GL_ARRAY_BUFFER,
+	//	vertices.size() * sizeof(Vertex),
+	//	vertices.data(),
+	//	GL_STATIC_DRAW);
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	GLuint element_vbo{ 0 };
-	glGenBuffers(1, &element_vbo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_vbo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-		elements.size() * sizeof(unsigned int),
-		elements.data(),
-		GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	//GLuint element_vbo{ 0 };
+	//glGenBuffers(1, &element_vbo);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_vbo);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+	//	elements.size() * sizeof(unsigned int),
+	//	elements.data(),
+	//	GL_STATIC_DRAW);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	GLuint vao{ 0 };
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_vbo);
+	//GLuint vao{ 0 };
+	//glGenVertexArrays(1, &vao);
+	//glBindVertexArray(vao);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_vbo);
 
-	glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
-		sizeof(Vertex), (void*)offsetof(Vertex, position));
+	//glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
+	//glEnableVertexAttribArray(0);
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
+	//	sizeof(Vertex), (void*)offsetof(Vertex, position));
 
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,
-		sizeof(Vertex), (void*)offsetof(Vertex, normal));
+	//glEnableVertexAttribArray(1);
+	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,
+	//	sizeof(Vertex), (void*)offsetof(Vertex, normal));
 
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE,
-		sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
+	//glEnableVertexAttribArray(2);
+	//glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE,
+	//	sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
 
-	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE,
-		sizeof(Vertex), (void*)offsetof(Vertex, tangent));
+	//glEnableVertexAttribArray(3);
+	//glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE,
+	//	sizeof(Vertex), (void*)offsetof(Vertex, tangent));
 
-	glEnableVertexAttribArray(4);
-	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE,
-		sizeof(Vertex), (void*)offsetof(Vertex, bitangent));
+	//glEnableVertexAttribArray(4);
+	//glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE,
+	//	sizeof(Vertex), (void*)offsetof(Vertex, bitangent));
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//glBindVertexArray(0);
 
 	//////////////////// TEXTURE ///////////////////
-	glGenTextures(1, &water_tex);
-	glBindTexture(GL_TEXTURE_2D, water_tex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 128, 128, 0, GL_RGB, GL_FLOAT, nullptr);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	//glGenTextures(1, &water_tex);
+	//glBindTexture(GL_TEXTURE_2D, water_tex);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 128, 128, 0, GL_RGB, GL_FLOAT, nullptr);
+	//glBindTexture(GL_TEXTURE_2D, 0);
 
 
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	////glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	////glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	////glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	////glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	//////////////////// SHADER ////////////////////
 
@@ -239,7 +243,7 @@ int main()
 
 	// Vertex shader creation.
 	GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-	std::string vertex_shader_string = StringFromFile("water_vs.glsl");
+	std::string vertex_shader_string = string_FromFile("water_vs.glsl");
 	const char * vertex_shader_code = vertex_shader_string.c_str();
 
 	glShaderSource(vertex_shader, 1, (const GLchar **)&vertex_shader_code,
@@ -257,7 +261,7 @@ int main()
 
 	// Fragment shader creation.
 	GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-	std::string fragment_shader_string = StringFromFile("water_fs.glsl");
+	std::string fragment_shader_string = string_FromFile("water_fs.glsl");
 	const char * fragment_shader_code = fragment_shader_string.c_str();
 
 	glShaderSource(fragment_shader, 1, (const GLchar **)&fragment_shader_code,
@@ -304,16 +308,16 @@ int main()
 
 		float modelScale = 0.5f;
 
-		processInput(window);
+		process_Input(window);
 
 		glClearColor(0.f, 0.f, 0.25f, 0.f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(water_shader_prog);
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, water_tex); // Texture data to use.
-		glUniform1i(glGetUniformLocation(water_shader_prog, "water_tex"), 0);
+		//glActiveTexture(GL_TEXTURE0);
+		//glBindTexture(GL_TEXTURE_2D, water_tex); // Texture data to use.
+		//glUniform1i(glGetUniformLocation(water_shader_prog, "water_tex"), 0);
 
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)screen_width / (float)screen_height, 0.1f, 100.f);
 		glUniformMatrix4fv(glGetUniformLocation(water_shader_prog, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
@@ -324,19 +328,14 @@ int main()
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::scale(model, glm::vec3(modelScale));
 		glUniformMatrix4fv(glGetUniformLocation(water_shader_prog, "model"), 1, GL_FALSE, glm::value_ptr(model));
-
-		glBindVertexArray(vao);
-		glDrawElements(GL_TRIANGLES, elements.size(), GL_UNSIGNED_INT, 0);
+		
+		glBindVertexArray(mesh_.vao);
+		glDrawElements(GL_TRIANGLES, mesh_.elements.size(), GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
-
-	glDeleteBuffers(1, &vertex_vbo);
-	glDeleteBuffers(1, &element_vbo);
-	glDeleteVertexArrays(1, &vao);
-
-	glDeleteTextures(1, &water_tex);
+	//glDeleteTextures(1, &water_tex);
 
 	glfwTerminate();
 	return 0;
@@ -344,7 +343,7 @@ int main()
 
 //////////////////// UTILITY ////////////////////
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void framebuffer_Size_CallBack(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
 }
@@ -394,7 +393,7 @@ void Displacement()
 {
 }
 
-void processInput(GLFWwindow *window)
+void process_Input(GLFWwindow *window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
@@ -434,7 +433,7 @@ void processInput(GLFWwindow *window)
 	}
 }
 
-void mouse_callBack(GLFWwindow * window, double xPos, double yPos)
+void mouse_CallBack(GLFWwindow * window, double xPos, double yPos)
 {
 	if (mouseEnable)
 	{
@@ -452,12 +451,12 @@ void mouse_callBack(GLFWwindow * window, double xPos, double yPos)
 	camera.ProcessMouseMovement(xOffset, yOffset);
 }
 
-void scroll_callBack(GLFWwindow* window, double xOffset, double yOffset)
+void scroll_CallBack(GLFWwindow* window, double xOffset, double yOffset)
 {
 	camera.ProcessMouseScrollWheel(yOffset);
 }
 
-std::string StringFromFile(const std::string &filename)
+std::string string_FromFile(const std::string &filename)
 {
 	std::ifstream if_str(filename);
 	std::string content((std::istreambuf_iterator<char>(if_str)),
