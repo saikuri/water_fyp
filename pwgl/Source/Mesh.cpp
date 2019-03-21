@@ -5,27 +5,29 @@ using namespace pwgl;
 Mesh::Mesh()
 {
 	build_Mesh();
+	create_Mesh();
+	populate_Verts();
 }
 
-int pwgl::Mesh::get_Vertices()
+int Mesh::get_Vertices()
 {
 	return vertices.size();
 }
 
-unsigned int pwgl::Mesh::get_Elements()
+unsigned int Mesh::get_Elements()
 {
 	return elements.size();
 }
 
-void pwgl::Mesh::set_Position(glm::vec3 position)
+void Mesh::set_Position(glm::vec3 position)
 {
 }
 
-void pwgl::Mesh::set_Normal(glm::vec3 normal)
+void Mesh::set_Normal(glm::vec3 normal)
 {
 }
 
-void pwgl::Mesh::set_Elements(unsigned int elements)
+void Mesh::set_Elements(unsigned int elements)
 {
 }
 
@@ -83,8 +85,6 @@ void Mesh::delete_Mesh()
 
 void Mesh::build_Mesh()
 {
-	populate_Verts();
-
 	for (int z = 0; z < vertex_height; z++)
 	{
 		for (int x = 0; x < vertex_width; x++)
@@ -114,7 +114,6 @@ void Mesh::build_Mesh()
 			}
 		}
 	}
-	create_Mesh();
 }
 
 void Mesh::populate_Verts()

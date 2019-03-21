@@ -49,12 +49,11 @@ struct Vertex
 namespace pwgl {
 	class Mesh
 	{
-	public:		
-		Mesh() {};
+	public:
+		Mesh();
 
 		//std::vector<Vertex>& get_Vertices();
 		int get_Vertices();
-		//std::vector<unsigned int>& get_Elements();
 		unsigned int get_Elements();
 
 		void set_Position(glm::vec3 position);
