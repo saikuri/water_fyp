@@ -2,19 +2,34 @@
 
 using namespace pwgl;
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> elements)
+Mesh::Mesh()
 {
-	this->vertices = vertices;
-	this->elements = elements;
-
 	build_Mesh();
 }
 
-Mesh::Mesh()
+int pwgl::Mesh::get_Vertices()
+{
+	return vertices.size();
+}
+
+unsigned int pwgl::Mesh::get_Elements()
+{
+	return elements.size();
+}
+
+void pwgl::Mesh::set_Position(glm::vec3 position)
 {
 }
 
-void pwgl::Mesh::create_Mesh()
+void pwgl::Mesh::set_Normal(glm::vec3 normal)
+{
+}
+
+void pwgl::Mesh::set_Elements(unsigned int elements)
+{
+}
+
+void Mesh::create_Mesh()
 {
 	glGenBuffers(1, &vertex_vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
@@ -59,14 +74,14 @@ void pwgl::Mesh::create_Mesh()
 	glBindVertexArray(0);
 }
 
-void pwgl::Mesh::delete_Mesh()
+void Mesh::delete_Mesh()
 {
 	glDeleteBuffers(1, &vertex_vbo);
 	glDeleteBuffers(1, &element_vbo);
 	glDeleteVertexArrays(1, &vao);
 }
 
-void pwgl::Mesh::build_Mesh()
+void Mesh::build_Mesh()
 {
 	populate_Verts();
 
@@ -102,7 +117,7 @@ void pwgl::Mesh::build_Mesh()
 	create_Mesh();
 }
 
-void pwgl::Mesh::populate_Verts()
+void Mesh::populate_Verts()
 {
 	for (int z = 0; z < vertex_height + 1; z++)
 	{

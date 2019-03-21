@@ -49,13 +49,23 @@ struct Vertex
 namespace pwgl {
 	class Mesh
 	{
-	public:
+	public:		
+		Mesh() {};
+
+		//std::vector<Vertex>& get_Vertices();
+		int get_Vertices();
+		//std::vector<unsigned int>& get_Elements();
+		unsigned int get_Elements();
+
+		void set_Position(glm::vec3 position);
+		void set_Normal(glm::vec3 normal);
+		void set_Elements(unsigned int elements);
+
+
+	private:
 		std::vector<Vertex> vertices;
 		std::vector<unsigned int> elements;
 		//std::vector<Texture> textures;
-		
-		Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> elements);
-		Mesh();
 
 		unsigned int cell_width = 128;
 		unsigned int cell_height = 128;
@@ -72,8 +82,6 @@ namespace pwgl {
 		void delete_Mesh();
 		void build_Mesh();
 		void populate_Verts();
-
-	private:
 	};
 }
 

@@ -329,8 +329,8 @@ int main()
 		model = glm::scale(model, glm::vec3(modelScale));
 		glUniformMatrix4fv(glGetUniformLocation(water_shader_prog, "model"), 1, GL_FALSE, glm::value_ptr(model));
 		
-		glBindVertexArray(mesh_.vao);
-		glDrawElements(GL_TRIANGLES, mesh_.elements.size(), GL_UNSIGNED_INT, 0);
+		//glBindVertexArray(vao);
+		glDrawElements(GL_TRIANGLES, mesh_.get_Elements(), GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
